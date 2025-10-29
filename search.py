@@ -12,11 +12,20 @@ def fetch_blog_links(keyword, num_results=10):
         url = 'https://www.googleapis.com/customsearch/v1'
 
         params = {
-            'q': f'{keyword} ("blog post" OR inurl:blog OR site:medium.com OR site:wordpress.com OR site:blogspot.com OR site:substack.com OR site:dev.to) -site:facebook.com -site:youtube.com -site:twitter.com',
-
-            'num': 10,
-            'start': start
+            'q': (
+                f'{keyword} ("blog post" OR "posted on" OR "written by" OR inurl:blog OR "comments") '
+                '-category -tag -archive '
+                '(site:medium.com OR site:substack.com OR site:wordpress.com OR site:blogspot.com '
+                'OR site:dev.to OR site:hashnode.dev OR site:ghost.io OR site:vocal.media '
+                'OR site:beehiiv.com OR site:mirror.xyz OR site:hubspot.com OR site:moz.com '
+                'OR site:ahrefs.com OR site:buffer.com OR site:shopify.com OR site:semrush.com) '
+                '-site:pinterest.* -site:facebook.com -site:youtube.com -site:twitter.com -site:reddit.com -site:quora.com'
+            ),
+            'num': 10,                  
+            'start': start,
+            'sort': 'date'          
         }
+
 
 
         response = requests.get(url, params=params)
