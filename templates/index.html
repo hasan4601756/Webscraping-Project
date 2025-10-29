@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Search</title>
+    <!-- Bootstrap CSS for quick styling -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f7f9fc;
+            padding-top: 50px;
+        }
+        .container {
+            max-width: 700px;
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .blog-list a {
+            text-decoration: none;
+            color: #007bff;
+        }
+        .blog-list a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="text-center mb-4">🔍 Blog Search</h2>
+
+        <!-- Search Form -->
+        <form method="POST" action="/" class="mb-4">
+            <div class="input-group">
+                <input type="text" name="keyword" class="form-control" placeholder="Enter a keyword (e.g. AI, travel, coding)" required>
+                <button class="btn btn-primary" type="submit">Search</button>
+            </div>
+        </form>
+
+        <!-- Results Section -->
+        {% if blogs %}
+            <h5 class="mb-3">Found {{ blogs|length }} blogs:</h5>
+            <ul class="list-group blog-list">
+                {% for blog in blogs %}
+                    <li class="list-group-item">
+                        <p>{{ blog.title }}</p>
+                        <a href="{{ blog.link }}" target="_blank">{{ blog.title }}</a>
+                        <a href="{{ url_for('blog_description') }}?url={{ blog.link }}" target="_blank">View Summary</a>
+
+                    </li>
+                {% endfor %}
+            </ul>
+        {% elif blogs is defined %}
+            <div class="alert alert-warning mt-3">No blogs found for that keyword.</div>
+        {% endif %}
+    </div>
+</body>
+</html>
