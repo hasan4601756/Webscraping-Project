@@ -1,67 +1,399 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blog Summary</title>
+    <title>Article Insights | Blog Summary</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary: #6C63FF;
+            --secondary: #FF6584;
+            --accent: #36D1DC;
+            --light: #F8F9FA;
+            --dark: #2D3748;
+            --text: #4A5568;
+            --border: #E2E8F0;
+            --success: #48BB78;
+            --warning: #ED8936;
+            --danger: #F56565;
+        }
+        
         body {
-            background-color: #f7f9fc;
-            padding-top: 50px;
-        }
-
-        .container {
-            max-width: 800px;
-            background: #fff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        h2 {
-            color: #333;
-        }
-
-        .summary {
-            white-space: pre-line;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text);
             line-height: 1.6;
-            color: #444;
         }
-
+        
+        .container {
+            max-width: 900px;
+            background: #fff;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        
+        .header h1 {
+            color: var(--dark);
+            font-weight: 700;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .header h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 25%;
+            width: 50%;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            border-radius: 2px;
+        }
+        
+        .summary-card {
+            background: var(--light);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-left: 5px solid var(--primary);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.03);
+        }
+        
+        .summary-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            color: var(--dark);
+        }
+        
+        .summary-title i {
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+        
+        .summary-content {
+            white-space: pre-line;
+            line-height: 1.7;
+            color: var(--text);
+            font-size: 1.05rem;
+        }
+        
+        .comments-section {
+            margin-top: 40px;
+        }
+        
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            color: var(--dark);
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 10px;
+        }
+        
+        .section-title i {
+            color: var(--secondary);
+        }
+        
+        .comment-card {
+            border: none;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .comment-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        .comment-body {
+            padding: 20px;
+        }
+        
+        .comment-content {
+            margin-bottom: 15px;
+            font-style: italic;
+            color: var(--text);
+            position: relative;
+            padding-left: 20px;
+        }
+        
+        .comment-content::before {
+            content: '"';
+            position: absolute;
+            left: 0;
+            top: -5px;
+            font-size: 2rem;
+            color: var(--border);
+        }
+        
+        .sentiment-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        
+        .sentiment-positive {
+            background: rgba(72, 187, 120, 0.15);
+            color: var(--success);
+        }
+        
+        .sentiment-negative {
+            background: rgba(245, 101, 101, 0.15);
+            color: var(--danger);
+        }
+        
+        .sentiment-neutral {
+            background: rgba(237, 137, 54, 0.15);
+            color: var(--warning);
+        }
+        
+        .visualization-section {
+            margin-top: 50px;
+        }
+        
+        .plot-card {
+            border: none;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+        
+        .plot-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+        
+        .plot-header {
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            color: white;
+            padding: 15px 20px;
+            font-weight: 600;
+        }
+        
+        .plot-body {
+            padding: 0;
+            text-align: center;
+        }
+        
+        .plot-img {
+            max-width: 100%;
+            padding: 20px;
+        }
+        
         .btn-back {
-            margin-top: 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 30px;
+            box-shadow: 0 4px 10px rgba(108, 99, 255, 0.3);
+        }
+        
+        .btn-back:hover {
+            background: #5a52e0;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(108, 99, 255, 0.4);
+            color: white;
+        }
+        
+        .no-content {
+            text-align: center;
+            padding: 40px 20px;
+            background: var(--light);
+            border-radius: 12px;
+            color: var(--text);
+        }
+        
+        .no-content i {
+            font-size: 3rem;
+            color: var(--secondary);
+            margin-bottom: 20px;
+        }
+        
+        .no-content h4 {
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: var(--text);
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 25px 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .summary-card {
+                padding: 20px;
+            }
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <h2 class="mb-4 text-center">📰 Blog Summary</h2>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul>
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% endwith %}
+        <div class="header">
+            <h1>Article Insights</h1>
+            <p>Summary and analysis of the blog content</p>
+        </div>
 
         {% if summary %}
-        <div class="summary mb-4">
-            {{ summary }}
+        <div class="summary-card">
+            <div class="summary-title">
+                <i class="fas fa-file-alt"></i>
+                <h3>Article Summary</h3>
+            </div>
+            <div class="summary-content">
+                {{ summary }}
+            </div>
         </div>
         {% else %}
-        <div class="alert alert-warning">No summary available for this article.</div>
+        <div class="no-content">
+            <i class="fas fa-search"></i>
+            <h4>No Summary Available</h4>
+            <p>We couldn't generate a summary for this article.</p>
+        </div>
         {% endif %}
 
+        <div class="comments-section">
+            <div class="section-title">
+                <i class="fas fa-comments"></i>
+                <h3>Reader Comments</h3>
+            </div>
+            
+            {% if comments %}
+                {% for comment in comments %}
+                <div class="card comment-card">
+                    <div class="card-body comment-body">
+                        <p class="comment-content">{{ comment.content }}</p>
+                        <div>
+                            <span class="sentiment-badge 
+                                {% if comment.sentiment == 'positive' %}sentiment-positive
+                                {% elif comment.sentiment == 'negative' %}sentiment-negative
+                                {% else %}sentiment-neutral{% endif %}">
+                                <i class="fas fa-{% if comment.sentiment == 'positive' %}smile
+                                                {% elif comment.sentiment == 'negative' %}frown
+                                                {% else %}meh{% endif %}"></i>
+                                {{ comment.sentiment|title }} Sentiment
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-content">
+                    <i class="fas fa-comment-slash"></i>
+                    <h4>No Comments Found</h4>
+                    <p>There are no comments available for this article.</p>
+                </div>
+            {% endif %}
+        </div>
+
+        
+        <div class="visualization-section">
+            <div class="section-title">
+                <i class="fas fa-chart-bar"></i>
+                <h3>Comment Analysis</h3>
+            </div>
+            {% if comments %}
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card plot-card">
+                        <div class="plot-header">
+                            <i class="fas fa-chart-pie me-2"></i> Sentiment Distribution
+                        </div>
+                        <div class="plot-body">
+                            <img src="{{ url_for('static', filename='img/plot.png') }}" alt="Sentiment Plot" class="plot-img">
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                <div class="col-md-6">
+                    <div class="card plot-card">
+                        <div class="plot-header">
+                            <i class="fas fa-cloud me-2"></i> Common Themes
+                        </div>
+                        <div class="plot-body">
+                            <img src="{{ url_for('static', filename='img/wordcloud.png') }}" alt="Word Cloud" class="plot-img">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+
         <div class="text-center">
-            <a href="/" class="btn btn-secondary btn-back">← Back to Search</a>
+            <a href="/" class="btn btn-back">
+                <i class="fas fa-arrow-left"></i> Back to Search
+            </a>
+        </div>
+        
+        <div class="footer">
+            <p>© 2023 Blog Insights | Understanding content through analysis</p>
         </div>
     </div>
 
-    <hr>
-    <h4>💬 Comments</h4>
-    <ul class="list-group">
-        {% for comment in comments %}
-        <li class="list-group-item">Content: {{ comment.content }}</li>
-        <li class="list-group-item">Sentiment: {{ comment.sentiment }}</li>
-        {% else %}
-        <li class="list-group-item text-muted">No comments found.</li>
-        {% endfor %}
-    </ul>
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

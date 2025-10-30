@@ -3,58 +3,357 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blog Search</title>
+    <title>Discover Blogs | Curated Content Search</title>
     <!-- Bootstrap CSS for quick styling -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary: #6C63FF;
+            --secondary: #FF6584;
+            --accent: #36D1DC;
+            --light: #F8F9FA;
+            --dark: #2D3748;
+            --text: #4A5568;
+            --border: #E2E8F0;
+        }
+        
         body {
-            background-color: #f7f9fc;
-            padding-top: 50px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text);
         }
+        
         .container {
-            max-width: 700px;
+            max-width: 800px;
             background: #fff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
         }
-        .blog-list a {
-            text-decoration: none;
-            color: #007bff;
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
         }
-        .blog-list a:hover {
-            text-decoration: underline;
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        
+        .header h1 {
+            color: var(--dark);
+            font-weight: 700;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .header h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 25%;
+            width: 50%;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            border-radius: 2px;
+        }
+        
+        .header p {
+            color: var(--text);
+            font-size: 1.1rem;
+            max-width: 500px;
+            margin: 20px auto 0;
+        }
+        
+        .search-form {
+            margin-bottom: 40px;
+            position: relative;
+        }
+        
+        .search-input {
+            border-radius: 50px;
+            padding: 15px 25px;
+            font-size: 1.1rem;
+            border: 2px solid var(--border);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.03);
+        }
+        
+        .search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 6px 12px rgba(108, 99, 255, 0.15);
+        }
+        
+        .search-btn {
+            border-radius: 50px;
+            padding: 15px 30px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            border: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            box-shadow: 0 4px 10px rgba(108, 99, 255, 0.3);
+        }
+        
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(108, 99, 255, 0.4);
+        }
+        
+        .results-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .results-count {
+            background: var(--light);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            color: var(--primary);
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .blog-card {
+            border: none;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .blog-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .blog-card-body {
+            padding: 25px;
+        }
+        
+        .blog-title {
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            line-height: 1.4;
+        }
+        
+        .blog-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .btn-visit {
+            background: var(--primary);
+            color: white;
+            border-radius: 6px;
+            padding: 8px 20px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-visit:hover {
+            background: #5a52e0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(108, 99, 255, 0.3);
+            color: white;
+        }
+        
+        .btn-summary {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            border-radius: 6px;
+            padding: 8px 20px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-summary:hover {
+            background: rgba(108, 99, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 40px 20px;
+            background: var(--light);
+            border-radius: 12px;
+            color: var(--text);
+        }
+        
+        .no-results i {
+            font-size: 3rem;
+            color: var(--secondary);
+            margin-bottom: 20px;
+        }
+        
+        .no-results h4 {
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+        
+        .search-tips {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 30px;
+        }
+        
+        .search-tips h5 {
+            color: var(--dark);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .search-tips ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .search-tips li {
+            margin-bottom: 8px;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: var(--text);
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 576px) {
+            .container {
+                padding: 25px 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .search-btn {
+                position: relative;
+                width: 100%;
+                margin-top: 15px;
+                right: 0;
+                top: 0;
+            }
+            
+            .blog-actions {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 <body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <ul>
+            {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% endwith %}
+
     <div class="container">
-        <h2 class="text-center mb-4">🔍 Blog Search</h2>
+        <div class="header">
+            <h1>Discover Blogs</h1>
+            <p>Find insightful articles and curated content across the web</p>
+        </div>
 
         <!-- Search Form -->
-        <form method="POST" action="/" class="mb-4">
+        <form method="POST" action="/" class="search-form">
             <div class="input-group">
-                <input type="text" name="keyword" class="form-control" placeholder="Enter a keyword (e.g. AI, travel, coding)" required>
-                <button class="btn btn-primary" type="submit">Search</button>
+                <input type="text" name="keyword" class="form-control search-input" placeholder="What would you like to explore today? (e.g. AI, travel, coding)" required>
+                <button class="btn btn-primary search-btn" type="submit">
+                    <i class="fas fa-search me-2"></i> Search
+                </button>
             </div>
         </form>
 
         <!-- Results Section -->
         {% if blogs %}
-            <h5 class="mb-3">Found {{ blogs|length }} blogs:</h5>
-            <ul class="list-group blog-list">
+            <div class="results-header">
+                <span class="results-count">
+                    <i class="fas fa-newspaper me-2"></i> {{ blogs|length }} blog{{ 's' if blogs|length > 1 else '' }} found
+                </span>
+            </div>
+            
+            <div class="blog-results">
                 {% for blog in blogs %}
-                    <li class="list-group-item">
-                        <p>{{ blog.title }}</p>
-                        <a href="{{ blog.link }}" target="_blank">{{ blog.title }}</a>
-                        <a href="{{ url_for('blog_description') }}?url={{ blog.link }}" target="_blank">View Summary</a>
-
-                    </li>
+                    <div class="card blog-card">
+                        <div class="card-body blog-card-body">
+                            <h5 class="blog-title">{{ blog.title }}</h5>
+                            <div class="blog-actions">
+                                <a href="{{ blog.link }}" target="_blank" class="btn btn-visit">
+                                    <i class="fas fa-external-link-alt"></i> Visit Blog
+                                </a>
+                                <a href="{{ url_for('blog_description') }}?url={{ blog.link }}" target="_blank" class="btn btn-summary">
+                                    <i class="fas fa-file-alt"></i> View Summary
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 {% endfor %}
-            </ul>
+            </div>
         {% elif blogs is defined %}
-            <div class="alert alert-warning mt-3">No blogs found for that keyword.</div>
+            <div class="no-results">
+                <i class="fas fa-search"></i>
+                <h4>No blogs found</h4>
+                <p>We couldn't find any blogs matching your search. Try different keywords or check your spelling.</p>
+            </div>
+            
+            <div class="search-tips">
+                <h5><i class="fas fa-lightbulb"></i> Search Tips</h5>
+                <ul>
+                    <li>Try using more general keywords</li>
+                    <li>Check for typos in your search</li>
+                    <li>Use specific terms related to your topic</li>
+                    <li>Try synonyms of your search terms</li>
+                </ul>
+            </div>
         {% endif %}
+        
+        <div class="footer">
+            <p>© 2023 Blog Discovery | Find your next favorite read</p>
+        </div>
     </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
